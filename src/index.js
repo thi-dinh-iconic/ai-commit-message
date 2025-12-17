@@ -1,6 +1,6 @@
 import simpleGit from "simple-git";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { getApiKey } from "./config.js";
+import { getApiKey, getModel } from "./config.js";
 import chalk from "chalk";
 
 const git = simpleGit();
@@ -33,7 +33,8 @@ async function generateCommitMessage(autoCommit = false) {
   const diff = await getDiff();
 
   const genAI = new GoogleGenerativeAI(getApiKey());
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
+  const modelName = getModel();
+  const model = genAI.getGenerativeModel({ model: modelName });
 
   const prompt = `Generate a concise, meaningful git commit message for the following changes. 
 Follow the Conventional Commits format (type(scope): description). 
