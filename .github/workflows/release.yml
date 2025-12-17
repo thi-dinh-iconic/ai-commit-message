@@ -1,0 +1,116 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag'
+        required: true
+        default: 'v1.3.1'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build all binaries
+      run: npm run build:all
+      
+    - name: Prepare release assets
+      run: |
+        mkdir -p release-assets
+        
+        # Copy and rename binaries with proper names
+        cp dist/bundled-cli-linux release-assets/ai-commit-linux
+        cp dist/bundled-cli-macos release-assets/ai-commit-macos
+        cp dist/bundled-cli-win.exe release-assets/ai-commit-windows.exe
+        
+        # Make them executable
+        chmod +x release-assets/ai-commit-linux
+        chmod +x release-assets/ai-commit-macos
+        
+        # Create compressed archives
+        tar -czf release-assets/ai-commit-linux.tar.gz -C release-assets ai-commit-linux
+        tar -czf release-assets/ai-commit-macos.tar.gz -C release-assets ai-commit-macos
+        zip -j release-assets/ai-commit-windows.zip release-assets/ai-commit-windows.exe
+        
+        # Create checksums
+        cd release-assets
+        sha256sum ai-commit-linux ai-commit-macos ai-commit-windows.exe > checksums.txt
+        cd ..
+        
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+        name: Release ${{ github.event.inputs.tag || github.ref_name }}
+        body: |
+          ## AI Commit Message - Binary Release
+          
+          ### 🚀 Download for your platform:
+          
+          - **Linux**: `ai-commit-linux.tar.gz`
+          - **macOS**: `ai-commit-macos.tar.gz` 
+          - **Windows**: `ai-commit-windows.zip`
+          
+          ### 📦 Installation:
+          
+          #### Linux/macOS:
+          ```bash
+          # Download and extract
+          tar -xzf ai-commit-linux.tar.gz  # or ai-commit-macos.tar.gz
+          
+          # Make executable and move to PATH
+          chmod +x ai-commit-linux  # or ai-commit-macos
+          sudo mv ai-commit-linux /usr/local/bin/ai-commit  # or ai-commit-macos
+          
+          # Now you can use it anywhere
+          ai-commit --help
+          ```
+          
+          #### Windows:
+          ```cmd
+          # Extract ai-commit-windows.zip
+          # Add the extracted folder to your PATH
+          # Or run directly: ai-commit-windows.exe --help
+          ```
+          
+          ### 🔑 Setup:
+          ```bash
+          # Configure your Gemini API key
+          ai-commit config YOUR_API_KEY
+          
+          # Generate commit messages
+          ai-commit generate
+          ```
+          
+          ### 📋 Checksums:
+          See `checksums.txt` for file integrity verification.
+          
+        files: |
+          release-assets/ai-commit-linux.tar.gz
+          release-assets/ai-commit-macos.tar.gz
+          release-assets/ai-commit-windows.zip
+          release-assets/ai-commit-linux
+          release-assets/ai-commit-macos
+          release-assets/ai-commit-windows.exe
+          release-assets/checksums.txt
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

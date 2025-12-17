@@ -27,6 +27,9 @@ npm run build:windows
 # Build for all platforms
 npm run build:all
 
+# Prepare GitHub release assets
+npm run prepare-release
+
 # Clean build artifacts
 npm run clean
 ```
@@ -35,20 +38,40 @@ npm run clean
 
 After building, you'll find these files in the `dist/` directory:
 
-- `ai-commit-message-macos` - macOS executable
-- `bundled-cli-linux` - Linux executable  
-- `bundled-cli-win.exe` - Windows executable
+- `ai-commit-macos` - macOS executable
+- `ai-commit-linux` - Linux executable  
+- `ai-commit-win.exe` - Windows executable
 
 ### Usage
 
 ```bash
 # Make executable (Linux/macOS)
-chmod +x ./dist/ai-commit-message-macos
+chmod +x ./dist/ai-commit-macos
 
-# Run the binary
-./dist/ai-commit-message-macos --help
-./dist/ai-commit-message-macos config YOUR_API_KEY
-./dist/ai-commit-message-macos generate
+# Run the binary (shorter command name!)
+./dist/ai-commit-macos --help
+./dist/ai-commit-macos config YOUR_API_KEY
+./dist/ai-commit-macos generate
+
+# Or copy to your PATH for global usage as 'ai-commit'
+sudo cp ./dist/ai-commit-macos /usr/local/bin/ai-commit
+ai-commit --help
+```
+
+## 🚀 GitHub Releases
+
+### Automatic Releases
+Push a version tag to trigger automatic release:
+```bash
+git tag v1.3.1
+git push origin v1.3.1
+```
+
+### Manual Releases
+Run the preparation script and upload to GitHub:
+```bash
+npm run prepare-release
+# Then upload files from ./release-assets/ to GitHub releases
 ```
 
 ### Distribution

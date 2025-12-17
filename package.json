@@ -13,7 +13,8 @@
     },
     "main": "src/index.js",
     "bin": {
-        "ai-commit-message": "bin/cli.js"
+        "ai-commit-message": "bin/cli.js",
+        "ai-commit": "bin/cli.js"
     },
     "keywords": [
         "ai-commit-message",
@@ -64,12 +65,14 @@
         "start": "node ./bin/cli.js",
         "bundle": "node build.js",
         "build": "npm run bundle && pkg dist/bundled-cli.js --out-path dist",
-        "build:linux": "npm run bundle && pkg dist/bundled-cli.js --targets node18-linux-x64 --output dist/ai-commit-message-linux",
-        "build:macos": "npm run bundle && pkg dist/bundled-cli.js --targets node18-macos-x64 --output dist/ai-commit-message-macos",
-        "build:windows": "npm run bundle && pkg dist/bundled-cli.js --targets node18-win-x64 --output dist/ai-commit-message-win.exe",
-        "build:all": "npm run bundle && pkg dist/bundled-cli.js --targets node18-linux-x64,node18-macos-x64,node18-win-x64 --out-path dist",
+        "build:linux": "npm run bundle && pkg dist/bundled-cli.js --targets node18-linux-x64 --output dist/ai-commit-linux",
+        "build:macos": "npm run bundle && pkg dist/bundled-cli.js --targets node18-macos-x64 --output dist/ai-commit-macos", 
+        "build:windows": "npm run bundle && pkg dist/bundled-cli.js --targets node18-win-x64 --output dist/ai-commit-win.exe",
+        "build:all": "npm run bundle && pkg dist/bundled-cli.js --targets node18-linux-x64,node18-macos-x64,node18-win-x64 --out-path dist && npm run rename-binaries",
+        "rename-binaries": "mv dist/bundled-cli-linux dist/ai-commit-linux 2>/dev/null || true && mv dist/bundled-cli-macos dist/ai-commit-macos 2>/dev/null || true && mv dist/bundled-cli-win.exe dist/ai-commit-win.exe 2>/dev/null || true",
         "clean": "rm -rf dist",
-        "prebuild": "npm run clean && mkdir -p dist"
+        "prebuild": "npm run clean && mkdir -p dist",
+        "prepare-release": "./prepare-release.sh"
     },
     "engines": {
         "node": ">=18.0.0"

@@ -29,9 +29,9 @@ async function buildBinary() {
 
   console.log('✅ Bundle created successfully!');
   console.log('🔨 Now you can create binaries with:');
-  console.log('   npx pkg dist/bundled-cli.js --targets node18-macos-x64 --output dist/ai-commit-message-macos');
-  console.log('   npx pkg dist/bundled-cli.js --targets node18-linux-x64 --output dist/ai-commit-message-linux');
-  console.log('   npx pkg dist/bundled-cli.js --targets node18-win-x64 --output dist/ai-commit-message-win.exe');
+  console.log('   npx pkg dist/bundled-cli.js --targets node18-macos-x64 --output dist/ai-commit-macos');
+  console.log('   npx pkg dist/bundled-cli.js --targets node18-linux-x64 --output dist/ai-commit-linux');
+  console.log('   npx pkg dist/bundled-cli.js --targets node18-win-x64 --output dist/ai-commit-win.exe');
 }
 
 buildBinary().catch(console.error);
