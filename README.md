@@ -17,6 +17,7 @@ Welcome to **ai-commit-message**! 🚀 Transform your git commit experience with
 - ⚡ **Fast & Lightweight**: Experience seamless integration with "git ai".
 - 🔐 **Secure**: Manage your API keys securely.
 - 🎨 **Beautiful CLI**: Enjoy a colorful command-line interface.
+- 🔄 **Model Selection**: List and choose from available Gemini models.
 
 ## 🚀 Installation
 
@@ -40,6 +41,18 @@ Alternatively, set the `GEMINI_API_KEY` environment variable:
 export GEMINI_API_KEY=<your-api-key>
 ```
 
+3. (Optional) Select a specific Gemini model:
+
+```bash
+# List all available models
+ai-commit-message list-models
+
+# Select a specific model
+ai-commit-message select-model gemini-1.5-flash
+```
+
+**Note:** The default model is `gemini-1.5-flash`. If you experience a 404 error with a specific model, use `list-models` to see available options.
+
 ## 💫 Usage
 
 ### Generate a Commit Message with "ai commit"
@@ -62,22 +75,25 @@ ai-commit-message -c
 
 ```bash
 Commands:
-  config <key>        Configure Gemini API key
-  generate [options]  Generate commit message
-  help [command]      display help for command
+  config <key>          Configure Gemini API key
+  list-models           List all available Gemini models
+  select-model <model>  Select a Gemini model to use
+  generate [options]    Generate commit message
+  help [command]        display help for command
 ```
 
 ## 🛠️ How "ai commit message" Works
 
 1. Verifies you're in a git repository.
 2. Checks for staged changes.
-3. Sends the diff to Gemini Pro API using gemini-1.5-flash-8b.
+3. Sends the diff to the configured Gemini model (default: gemini-1.5-flash).
 4. Generates a conventional commit message.
 5. Displays the message or auto-commits (with -c flag).
 
 ## 🧩 Technical Details
 
-- Utilizes the **gemini-1.5-flash-8b** model for generating commit messages.
+- Utilizes configurable Gemini models (default: **gemini-1.5-flash**).
+- Supports listing and selecting from available Gemini models.
 - Implements Conventional Commits specification.
 - Built with modern ES modules.
 - Handles errors gracefully.
@@ -111,4 +127,4 @@ MIT License - feel free to use "ai commit message" in your projects!
 
 ---
 
-<p align="center">Made with ❤️ and powered by 🤖 and gemini-1.5-flash-8b</p>
+<p align="center">Made with ❤️ and powered by 🤖 Gemini AI</p>
