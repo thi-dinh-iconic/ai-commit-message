@@ -46,7 +46,7 @@ export const listAvailableModels = async (apiKey) => {
     const data = await response.json();
     
     // Filter models that support generateContent
-    const models = data.models
+    const models = (data.models || [])
       .filter(model => 
         model.supportedGenerationMethods && 
         model.supportedGenerationMethods.includes("generateContent")
