@@ -61,7 +61,15 @@
     ],
     "scripts": {
         "test": "jest",
-        "start": "node ./bin/cli.js"
+        "start": "node ./bin/cli.js",
+        "bundle": "node build.js",
+        "build": "npm run bundle && pkg dist/bundled-cli.js --out-path dist",
+        "build:linux": "npm run bundle && pkg dist/bundled-cli.js --targets node18-linux-x64 --output dist/ai-commit-message-linux",
+        "build:macos": "npm run bundle && pkg dist/bundled-cli.js --targets node18-macos-x64 --output dist/ai-commit-message-macos",
+        "build:windows": "npm run bundle && pkg dist/bundled-cli.js --targets node18-win-x64 --output dist/ai-commit-message-win.exe",
+        "build:all": "npm run bundle && pkg dist/bundled-cli.js --targets node18-linux-x64,node18-macos-x64,node18-win-x64 --out-path dist",
+        "clean": "rm -rf dist",
+        "prebuild": "npm run clean && mkdir -p dist"
     },
     "engines": {
         "node": ">=18.0.0"
@@ -80,5 +88,24 @@
     "files": [
         "bin/",
         "src/"
-    ]
+    ],
+    "devDependencies": {
+        "esbuild": "^0.27.2",
+        "pkg": "^5.8.1"
+    },
+    "pkg": {
+        "scripts": [
+            "src/**/*.js"
+        ],
+        "assets": [
+            "node_modules/@google/generative-ai/**/*"
+        ],
+        "targets": [
+            "node18-linux-x64",
+            "node18-macos-x64",
+            "node18-macos-arm64",
+            "node18-win-x64"
+        ],
+        "outputPath": "dist"
+    }
 }
