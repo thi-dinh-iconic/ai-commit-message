@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// Suppress experimental warnings for stable APIs
+process.removeAllListeners('warning');
+
 import { Command } from "commander";
 import { generateCommitMessage } from "../src/index.js";
 import { setApiKey, listAvailableModels, getApiKey, setModel, getModel } from "../src/config.js";
