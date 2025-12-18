@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 
-// Suppress experimental warnings for stable APIs
-process.removeAllListeners('warning');
-
 import { Command } from "commander";
 import { generateCommitMessage } from "../src/index.js";
 import { setApiKey, listAvailableModels, getApiKey, setModel, getModel } from "../src/config.js";
@@ -13,7 +10,7 @@ const program = new Command();
 program
   .name("ai-commit-message")
   .description("AI-powered git commit message generator")
-  .version("1.3.1");
+  .version("1.3.3");
 
 program
   .command("config")

@@ -1,5 +1,10 @@
 import Conf from "conf";
 
+// Suppress experimental warnings for stable APIs like fetch
+if (typeof process !== 'undefined' && process.removeAllListeners) {
+  process.removeAllListeners('warning');
+}
+
 const config = new Conf({
   projectName: "ai-commit-message",
 });
