@@ -20771,6 +20771,7 @@ ${diff}`;
 }
 
 // bin/cli.js
+process.removeAllListeners("warning");
 var program2 = new Command();
 program2.name("ai-commit-message").description("AI-powered git commit message generator").version("1.3.1");
 program2.command("config").description("Configure Gemini API key").argument("<key>", "Gemini API key").action(async (key) => {
