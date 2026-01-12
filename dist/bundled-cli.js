@@ -20745,25 +20745,51 @@ async function getDiff() {
 async function generateCommitMessage(autoCommit = false) {
   await checkGitRepo();
   const diff = await getDiff();
+  const branchName = await git.revparse(["--abbrev-ref", "HEAD"]);
+  const ticketMatch = branchName.match(/^([A-Z]+-\d+)/);
+  const hasTicketFormat = ticketMatch !== null;
+  const ticketReference = hasTicketFormat ? ticketMatch[1] : null;
   const genAI = new GoogleGenerativeAI(getApiKey());
   const modelName = getModel();
   const model = genAI.getGenerativeModel({ model: modelName });
-  const prompt = `Generate a concise, meaningful git commit message for the following changes. 
-Follow the Conventional Commits format (type(scope): description). 
-The message should be under 50 characters. And DO NOT include any other text.
-Examples:
-"""
-feat(api): add user registration
-Test(buyers): Fix tag remarks test
-Fix(e2e): Reduce search delay
-test(suppliers): remove smoke tag
-feat: remove unused supplier pages
-"""
-Changes:
+  const prompt = `You are an expert software engineer tasked with writing professional git commit messages.
+
+REQUIREMENTS:
+- Use Conventional Commits format: type(scope): description
+- Keep the total message under 70 characters
+- Be specific and descriptive about what changed
+- Use present tense, imperative mood (e.g., "add", "fix", "update")
+${hasTicketFormat ? `- Start with the ticket reference [${ticketReference}] followed by a space` : ""}
+- Return ONLY the commit message, no explanations or quotes
+
+CONVENTIONAL COMMIT TYPES:
+- feat: new feature for the user
+- fix: bug fix for the user
+- docs: documentation changes
+- style: formatting, missing semicolons, etc (no production code change)
+- refactor: code change that neither fixes a bug nor adds a feature
+- test: adding missing tests or correcting existing tests
+- chore: maintenance, dependencies, tooling
+
+EXAMPLES:
+${hasTicketFormat ? `
+- [${ticketReference}] feat(auth): implement OAuth login flow
+- [${ticketReference}] fix(api): resolve user data validation error
+- [${ticketReference}] docs(readme): update installation instructions
+- [${ticketReference}] refactor(utils): optimize data processing logic
+` : `
+- feat(auth): implement OAuth login flow
+- fix(api): resolve user data validation error
+- docs(readme): update installation instructions
+- refactor(utils): optimize data processing logic
+`}
+
+ANALYZE THESE STAGED CHANGES AND GENERATE A PROFESSIONAL COMMIT MESSAGE:
+
 ${diff}`;
   const result = await model.generateContent(prompt, {
-    maxOutputTokens: 20,
-    temperature: 0.6
+    maxOutputTokens: 30,
+    temperature: 0.4
   });
   const message = result.response.text().trim();
   if (autoCommit) {
